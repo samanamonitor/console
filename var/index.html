@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"> 
+    <title>Samana Monitor Console</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <style>
+    .scrollable-menu {
+        height: auto;
+        max-height: 200px;
+        overflow-x: hidden;
+    }
+    </style>
+</head>
+<body>
+    <script language="javascript">
+    $( document ).ready(function() {
+        loadHostGroups();
+		loadHosts("All Hostgroups");
+		$("#refresh_btn").click(loadHostData);
+    });
+	function loadHostData(event) {
+		$("#hostdata").html(
+			$("<table>")
+				.addClass("table table-striped")
+				.attr("id", "host_table"));
+		table_head = [ 
+            "Server", 
+            "CPU Load(8h)", 
+            "CPU Queue(8h)", 
+            "RAM(8h)", 
+            "C",
+            "D",
+            "Citrix Load(8h)", 
+            "User Sessions(8h)", 
+            "Maint",
+            "Unreg",
+            "Uptime",
+            "AppLog(1h)",
+            "SysLog(1h)",
+            "CtxSvcs",
+            "Spooler"];
+		add_row($("#host_table"), table_head, true);
+		dHostLabel = $("#dHostLabel").attr("label-value");
+		if(dHostLabel != "All Hosts") {
+			add_row($("#host_table"), row_graph(dHostLabel), false);
+			return;
+		}
+		$("#host_ul > li").each(function(index) {
+			server = $(this).attr("option-value");
+			if(server != "All Hosts") {
+				add_row($("#host_table"), row_graph(server), false);
+			}
+		});
+		setInterval(image_refresh, 60000);
+	}
+	function image_refresh() {
+		var rand = Math.random();
+		$("#host_table img").each(function(index){ 
+			var s = "server=" + $(this).attr("host-name");
+			var p = "perfname=" + $(this).attr("perfname");
+            var u = $(this).attr("graphurl") + "?"
+			var e;
+			if(typeof($(this).attr("extra")) == 'undefined') {
+				e = "";
+			} else {
+				e = $(this).attr("extra");
+			}
+			var r = "rand=" + rand;
+			$(this).attr("src", u + s + "&" + p + e + "&" + r);
+		});
+	}
+	function row_graph(server) {
+		rand = Math.random();
+		return [
+			server, 
+			$("<img>").attr("src", "graph.php?server=" + server + "&perfname=CPU_Load&rand=" + rand)
+				.attr("host-name", server)
+				.attr("perfname", "CPU_Load")
+                .attr("graphurl", "graph.php"), 
+			$("<img>").attr("src", "graph.php?server=" + server + "&perfname=CPU_Queue&rand=" + rand)
+				.attr("host-name", server)
+				.attr("perfname", "CPU_Queue")
+                .attr("graphurl", "graph.php"),
+			$("<img>").attr("src", "graph.php?server=" + server + "&perfname=Memory_Utilization&ds=2&rand=" + rand)
+				.attr("host-name", server)
+				.attr("perfname", "Memory_Utilization")
+				.attr("extra", "&ds=2")
+                .attr("graphurl", "graph.php"),
+			$("<img>").attr("src", "graph?server=" + server + "&perfname=Disk_space_on_C_&ds=1&rand=" + rand)
+				.attr("host-name", server)
+				.attr("perfname", "Disk_space_on_C_")
+				.attr("extra", "&ds=1")
+                .attr("graphurl", "graph"),
+			$("<img>").attr("src", "graph?server=" + server + "&perfname=Disk_space_on_D_&ds=1&rand=" + rand)
+				.attr("host-name", server)
+				.attr("perfname", "Disk_space_on_D_")
+				.attr("extra", "&ds=1")
+                .attr("graphurl", "graph"),
+			$("<img>").attr("src", "graph.php?server=" + server + "&perfname=Load_Server&high=10000&rand=" + rand)
+				.attr("host-name", server)
+				.attr("perfname", "Load_Server")
+				.attr("extra", "&high=10000")
+                .attr("graphurl", "graph.php"),
+			$("<img>").attr("src", "graph.php?server=" + server + "&perfname=Load_Session&high=15&rand=" + rand)
+				.attr("host-name", server)
+				.attr("perfname", "Load_Session")
+				.attr("extra", "&high=15")
+                .attr("graphurl", "graph.php"),
+			$("<img>").attr("src", "graph?server=" + server + "&perfname=Maintenance&rand=" + rand)
+				.attr("host-name", server)
+				.attr("perfname", "Maintenance")
+                .attr("graphurl", "graph"),
+			$("<img>").attr("src", "graph?server=" + server + "&perfname=Unregistered&rand=" + rand)
+				.attr("host-name", server)
+				.attr("perfname", "Unregistered")
+                .attr("graphurl", "graph"),
+			$("<img>").attr("src", "graph?server=" + server + "&perfname=Uptime&rand=" + rand)
+				.attr("host-name", server)
+				.attr("perfname", "Uptime")
+                .attr("graphurl", "graph"),
+			$("<img>").attr("src", "graph?server=" + server + "&perfname=Application_Errors&rand=" + rand)
+				.attr("host-name", server)
+				.attr("perfname", "Application_Errors")
+                .attr("graphurl", "graph"),
+			$("<img>").attr("src", "graph?server=" + server + "&perfname=System_Errors&rand=" + rand)
+				.attr("host-name", server)
+				.attr("perfname", "System_Errors")
+                .attr("graphurl", "graph"),
+			$("<img>").attr("src", "graph?server=" + server + "&perfname=Citrix_Services&rand=" + rand)
+				.attr("host-name", server)
+				.attr("perfname", "Citrix_Services")
+                .attr("graphurl", "graph"),
+			$("<img>").attr("src", "graph?server=" + server + "&perfname=Windows_Services_Spooler&rand=" + rand)
+				.attr("host-name", server)
+				.attr("perfname", "Windows_Services_Spooler")
+                .attr("graphurl", "graph")
+		];
+	}
+	function add_row(table, rowdata, header) {
+		celltype = header ? "<th>" : "<td>";
+		row = $("<tr>");
+		rowdata.forEach(function(element) {
+			row.append($(celltype).html(element));
+		});
+		table.append(row);
+	}
+    function loadHostGroups() {
+        $.getJSON("nagiosconfig",
+            { action: "hostgroup_list" },
+            showHostGroups);
+    }
+    function showHostGroups(list) {
+        $("#hostgroup_ul").empty();
+		add_option($("#hostgroup_ul"), "All Hostgroups", hostgroup_click);
+        list.forEach(function (element) {
+			add_option($("#hostgroup_ul"), element, hostgroup_click);
+        });
+    }
+	function add_option(dropdown, option_name, option_func) {
+		dropdown.append($("<li>")
+			.attr("option-value", option_name)
+			.append($("<a>")
+				.attr("href", "#")
+				.html(option_name)
+				.click(option_func)));
+	}
+	function set_label(label, value) {
+        label.html(value)
+			.attr("label-value", value)
+			.append("&nbsp;")
+			.append($("<span>").addClass("caret"));
+	}
+    function hostgroup_click(event) {
+        hostgroup_name = $(event.target).html();
+        set_label($("#dHostgroupLabel"), hostgroup_name);
+        loadHosts(hostgroup_name);
+    }
+    
+    function loadHosts(hostgroup_name) {
+		data = { 
+			action: "host_list"
+		};
+		if(hostgroup_name != "All Hostgroups") {
+			data['in_hostgroup'] = hostgroup_name;
+		}
+        $.getJSON("nagiosconfig", data, showHostList);
+    }
+    
+    function showHostList(data) {
+		$("#host_ul").empty();
+		set_label($("#dHostLabel"), "All Hosts");
+		add_option($("#host_ul"), "All Hosts", host_click);
+        data.forEach(function(element) {
+			add_option($("#host_ul"), element, host_click);
+        });
+    }
+	
+	function host_click(event) {
+        host_name = $(event.target).html();
+        set_label($("#dHostLabel"), host_name);
+	}
+
+    </script>
+    <div class="container-fluid">
+        <h1>Samana Monitor Console</h1>
+		<div id="mainToolbar" class="btn-group" role="group" aria-label="HostBtnGroup">
+			<button type="button" id="refresh_btn" class="btn btn-default">Refresh</button>
+
+			<div class="btn-group" role="group">
+				<button id="dHostgroupLabel" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+				All Hostgroups
+				<span class="caret"></span>
+				</button>
+				<ul id="hostgroup_ul" class="dropdown-menu scrollable-menu" aria-labelledby="dHostgroupLabel"></ul>
+			</div>
+			<div class="btn-group" role="group">
+				<button id="dHostLabel" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+				All Hosts
+				<span class="caret"></span>
+				</button>
+				<ul id="host_ul" class="dropdown-menu scrollable-menu" aria-labelledby="dHostLabel"></ul>
+			</div>
+		</div>
+        <div class="container-fluid" id="hostdata"></div>
+    </div>
+
+</body>
