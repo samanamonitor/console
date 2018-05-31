@@ -14,6 +14,11 @@ def get_host(host_name=None):
 
 def host_list(registered=None,in_hostgroup=""):
     hl = []
+    hg = Model.Hostgroup.objects.filter(hostgroup_name=in_hostgroup)
+    if len(hg) != 1:
+       return [ '501 Invalid Input', "ERROR: Invalid hostgroup" ]
+    for h in hg[0].get('members', '').split(','):
+        hl += [ h ]
     for h in Model.Host.objects.filter(register=registered,hostgroups__regex=r"\b"+in_hostgroup+r"\b"):
         hl += [ h.get("host_name", None) ]
     return [ '200 OK', json.dumps(hl) ]
