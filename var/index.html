@@ -76,19 +76,20 @@
 		rand = Math.random();
 		return [
 			server, 
-			$("<img>").attr("src", "graph.php?server=" + server + "&perfname=CPU_Load&rand=" + rand)
+			$("<img>").attr("src", "graph?server=" + server + "&perfname=CPU_Load&rand=" + rand)
 				.attr("host-name", server)
 				.attr("perfname", "CPU_Load")
-                .attr("graphurl", "graph.php"), 
-			$("<img>").attr("src", "graph.php?server=" + server + "&perfname=CPU_Queue&rand=" + rand)
+                .attr("graphurl", "graph"), 
+			$("<img>").attr("src", "graph?server=" + server + "&perfname=CPU_Queue&high=5&rand=" + rand)
 				.attr("host-name", server)
 				.attr("perfname", "CPU_Queue")
-                .attr("graphurl", "graph.php"),
-			$("<img>").attr("src", "graph.php?server=" + server + "&perfname=Memory_Utilization&ds=2&rand=" + rand)
+                .attr("extra", "&high=5")
+                .attr("graphurl", "graph"),
+			$("<img>").attr("src", "graph?server=" + server + "&perfname=Memory_Utilization&ds=2&text=2&rand=" + rand)
 				.attr("host-name", server)
 				.attr("perfname", "Memory_Utilization")
-				.attr("extra", "&ds=2")
-                .attr("graphurl", "graph.php"),
+				.attr("extra", "&ds=2&text=2")
+                .attr("graphurl", "graph"),
 			$("<img>").attr("src", "graph?server=" + server + "&perfname=Disk_space_on_C_&ds=1&rand=" + rand)
 				.attr("host-name", server)
 				.attr("perfname", "Disk_space_on_C_")
@@ -99,16 +100,16 @@
 				.attr("perfname", "Disk_space_on_D_")
 				.attr("extra", "&ds=1")
                 .attr("graphurl", "graph"),
-			$("<img>").attr("src", "graph.php?server=" + server + "&perfname=Load_Server&high=10000&rand=" + rand)
+			$("<img>").attr("src", "graph?server=" + server + "&perfname=Load_Server&high=10000&rand=" + rand)
 				.attr("host-name", server)
 				.attr("perfname", "Load_Server")
 				.attr("extra", "&high=10000")
-                .attr("graphurl", "graph.php"),
-			$("<img>").attr("src", "graph.php?server=" + server + "&perfname=Load_Session&high=15&rand=" + rand)
+                .attr("graphurl", "graph"),
+			$("<img>").attr("src", "graph?server=" + server + "&perfname=Load_Session&high=15&rand=" + rand)
 				.attr("host-name", server)
 				.attr("perfname", "Load_Session")
 				.attr("extra", "&high=15")
-                .attr("graphurl", "graph.php"),
+                .attr("graphurl", "graph"),
 			$("<img>").attr("src", "graph?server=" + server + "&perfname=Maintenance&rand=" + rand)
 				.attr("host-name", server)
 				.attr("perfname", "Maintenance")
