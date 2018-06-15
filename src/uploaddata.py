@@ -12,8 +12,8 @@ if len(sys.argv) != 3:
     usage()
     exit(3)
 
-datacenter_uuid = sys.argv[0]
-url = sys.argv[1] + datacenter_uuid
+datacenter_uuid = sys.argv[1]
+url = sys.argv[2] + datacenter_uuid
 
 s = StatusDat()
 s.parse()
