@@ -34,25 +34,45 @@ class StatusData:
                 sd += [ service['service_description'] ]
         return sd
 
+    def get_hosts(self):
+        hs = []
+        for host in self.data['hoststatus']:
+            hs += [ host['host_name'] ]
+        return hs
+
 def usage():
-    print "UNKNOWN - USAGE: loadhost_datacenter <datacenter-uuid> <service|host> <host_name> <service_description?>"
+    print "UNKNOWN - USAGE: loadhost_datacenter <datacenter-uuid> <service|host|hostservices|hosts> <host_name> <service_description?>"
     exit(3)    
 
-if len(sys.argv) < 4:
+argc = len(sys.argv)
+
+if argc < 3:
     print "Missing arguments"
     usage()
 
 datacenter_uuid = sys.argv[1]
 object_type = sys.argv[2]
-if object_type != 'service' and object_type != 'host' and object_type != 'hostservices':
-    print "Object type can only be service, host or hostservices not \"%s\"" % object_type
+
+if object_type == 'service':
+    if argc != 5: usage()
+    host_name = sys.argv[3]
+    service_description = sys.argv[4]
+
+elif object_type == 'host':
+    if argc != 4: usage()
+    host_name = sys.argv[3]
+
+elif object_type == 'hostservices':
+    if argc != 4: usage()
+    host_name = sys.argv[3]
+
+elif object_type == 'hosts':
+    pass
+
+else:
+    print "Invalid object type"
     usage()
 
-host_name = sys.argv[3]
-if object_type == "service":
-    if len(sys.argv) != 5:
-        usage()
-    service_description = sys.argv[4]
 
 sd = StatusData(datacenter_uuid)
 if object_type == 'host':
@@ -79,6 +99,10 @@ elif object_type == 'service':
 
 elif object_type == 'hostservices':
     print sd.get_service_for_host(host_name)
+    exit(0)
+
+elif object_type == 'hosts':
+    print sd.get_hosts()
     exit(0)
 
 print "%s | %s" % (plugin_output, performance_data)
