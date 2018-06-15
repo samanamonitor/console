@@ -7,9 +7,13 @@ import sys
 
 class StatusData:
     def __init__(self, datacenter_uuid):
-        fh = open("/var/lib/samanamonitor/" + datacenter_uuid, 'r')
-        self.data = json.load(fh)
-        fh.close()
+        try:
+            fh = open("/var/lib/samanamonitor/" + datacenter_uuid, 'r')
+            self.data = json.load(fh)
+            fh.close()
+        except:
+            print "Invalid Datacenter"
+            usage()
 
     def get_host(self, host_name):
         for host in self.data['hoststatus']:
@@ -28,11 +32,13 @@ def usage():
     exit(3)    
 
 if len(sys.argv) < 4:
+    print "Missing arguments"
     usage()
 
 datacenter_uuid = sys.argv[1]
 object_type = sys.argv[2]
-if object_type != 'service' or object_type != 'host':
+if object_type != 'service' and object_type != 'host':
+    print "Object type can only be service or host not \"%s\"" % object_type
     usage()
 
 host_name = sys.argv[3]
