@@ -8,13 +8,12 @@ import json
 def usage():
     print "UNKNOWN - USAGE: uploaddata.py <datacenter-uuid> <url>"
 
-print len(sys.argv)
-if len(sys.argv) != 2:
+if len(sys.argv) != 3:
     usage()
     exit(3)
 
 datacenter_uuid = sys.argv[0]
-url = 'http://nagios.samanagroup.com/samanamonitor/datacenter/' + datacenter_uuid
+url = sys.argv[1] + datacenter_uuid
 
 s = StatusDat()
 s.parse()
