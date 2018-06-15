@@ -44,6 +44,7 @@ class StatusData:
     def get_host_config_all(self):
         config = ""
         for host in self.data['hoststatus']:
+            if host['host_name'] == 'localhost': continue
             config += """define host {
             use                    samana-host
             host_name              %s
