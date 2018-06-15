@@ -41,7 +41,7 @@ class StatusData:
             hs += [ host['host_name'] ]
         return hs
 
-    def get_host_config(self):
+    def get_host_config_all(self):
         config = ""
         for host in self.data['hoststatus']:
             config += """define host {
@@ -79,6 +79,9 @@ elif object_type == 'hostservices':
 elif object_type == 'hosts':
     pass
 
+elif object_type == 'host_config_all':
+    pass
+
 else:
     print "Invalid object type"
     usage()
@@ -113,6 +116,10 @@ elif object_type == 'hostservices':
 
 elif object_type == 'hosts':
     print sd.get_hosts()
+    exit(0)
+
+elif object_type == 'host_config_all':
+    print sd.get_host_config_all()
     exit(0)
 
 print "%s | %s" % (plugin_output, performance_data)
