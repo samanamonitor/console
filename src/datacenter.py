@@ -2,8 +2,11 @@ import json
 import os.path
 import sys
 from time import time
+from ConfigParser import ConfigParser
 
-data_path = '/usr/src/netpivot/nagiosstatus/wsgi/data'
+config = ConfigParser()
+config.read('/etc/samanamonitor/samanamonitor.conf')
+data_path = config.get('general', 'datacenter_path')
 
 def res_forbidden(environ, message=None):
     if message is None:
