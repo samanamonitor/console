@@ -23,7 +23,8 @@ class StatusData:
 
     def get_service(self, service_description, host_name):
         for service in self.data['servicestatus']:
-            if service['service_description'] == service_description and service['host_name'] == host_name:
+            if service['service_description'] == service_description \
+                    and service['host_name'] == host_name:
                 return service
         return None
 
@@ -40,8 +41,17 @@ class StatusData:
             hs += [ host['host_name'] ]
         return hs
 
+    def get_host_config(self):
+        config = ""
+        for host in self.data['hoststatus']:
+            config += """define host {
+            use                    samana-host
+            host_name              %s
+            }\n\n""" % host['host_name']
+        return config
+
 def usage():
-    print "UNKNOWN - USAGE: loadhost_datacenter <datacenter-uuid> <service|host|hostservices|hosts> <host_name> <service_description?>"
+    print "UNKNOWN - USAGE: loadhost_datacenter <datacenter-uuid> <service|host|hostservices|hosts> <host_name?> <service_description?>"
     exit(3)    
 
 argc = len(sys.argv)
