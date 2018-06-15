@@ -1,0 +1,3 @@
+# ignore all editor temp files
+._*
+.DS_Store
