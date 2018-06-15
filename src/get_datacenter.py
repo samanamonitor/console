@@ -27,6 +27,13 @@ class StatusData:
                 return service
         return None
 
+    def get_service_for_host(self, host_name):
+        sd = []
+        for service in self.data['servicestatus']:
+            if service['host_name'] == host_name:
+                sg += [ service['service_description'] ]
+        return sd
+
 def usage():
     print "UNKNOWN - USAGE: loadhost_datacenter <datacenter-uuid> <service|host> <host_name> <service_description?>"
     exit(3)    
@@ -37,8 +44,8 @@ if len(sys.argv) < 4:
 
 datacenter_uuid = sys.argv[1]
 object_type = sys.argv[2]
-if object_type != 'service' and object_type != 'host':
-    print "Object type can only be service or host not \"%s\"" % object_type
+if object_type != 'service' and object_type != 'host' and object_type != 'hostservices':
+    print "Object type can only be service, host or hostservices not \"%s\"" % object_type
     usage()
 
 host_name = sys.argv[3]
@@ -69,6 +76,10 @@ elif object_type == 'service':
         plugin_output = s['plugin_output']
         performance_data = s['performance_data']
         current_state = int(s['current_state'])
+
+elif object_type == 'hostservices':
+    print sd.get_service_for_host(host_name)
+    exit(0)
 
 print "%s | %s" % (plugin_output, performance_data)
 exit(current_state)
