@@ -1,6 +1,6 @@
 import sys
 import requests
-sys.path.insert(0, './lib')
+sys.path.insert(0, '.')
 from samananag import StatusDat
 
 datacenter_uuid = 'asdfa'
