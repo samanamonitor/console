@@ -31,7 +31,7 @@ class StatusData:
         sd = []
         for service in self.data['servicestatus']:
             if service['host_name'] == host_name:
-                sg += [ service['service_description'] ]
+                sd += [ service['service_description'] ]
         return sd
 
 def usage():
