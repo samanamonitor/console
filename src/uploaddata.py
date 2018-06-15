@@ -4,7 +4,16 @@ sys.path.insert(0, '.')
 from samananag import StatusDat
 import json
 
-datacenter_uuid = 'asdfa'
+
+def usage():
+    print "UNKNOWN - USAGE: uploaddata.py <datacenter-uuid> <url>"
+
+print len(argv)
+if len(sys.argv) != 2:
+    usage()
+    exit(3)
+
+datacenter_uuid = sys.argv[0]
 url = 'http://nagios.samanagroup.com/samanamonitor/datacenter/' + datacenter_uuid
 
 s = StatusDat()
