@@ -36,7 +36,7 @@ h = sd.get_host(host_name)
 if h is not None:
     #print json.dumps(h, indent=2)
     print "%s | %s" % (h['plugin_output'], h['performance_data'])
-    exit(h['current_state'])
+    exit(int(h['current_state']))
 else:
     print "UNKNOWN - No Host"
     exit(3)
