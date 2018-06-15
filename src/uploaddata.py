@@ -2,6 +2,7 @@ import sys
 import requests
 sys.path.insert(0, '.')
 from samananag import StatusDat
+import json
 
 datacenter_uuid = 'asdfa'
 url = 'http://nagios.samanagroup.com/samanamonitor/datacenter/' + datacenter_uuid
