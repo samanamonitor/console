@@ -1,3 +1,6 @@
 # ignore all editor temp files
 ._*
 .DS_Store
+
+# ignore all compiled python files
+*.pyc
