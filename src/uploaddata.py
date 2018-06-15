@@ -11,7 +11,7 @@ s = StatusDat()
 s.parse()
 r = requests.put(url, data=json.dumps(s.data))
 
-if r.status_code == requests.code.ok:
+if r.status_code == requests.codes.ok:
     print "OK - Data Uploaded"
     exit(0)
 else:
