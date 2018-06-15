@@ -24,7 +24,7 @@ class StatusData:
         return None
 
 
-if len(sys.argv) != 2:
+if len(sys.argv) != 3:
     print "UNKNOWN - USAGE: loadhost_datacenter <datacenter-uuid> <host_name>"
     exit(3)
 
