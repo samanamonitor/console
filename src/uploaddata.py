@@ -8,7 +8,7 @@ import json
 def usage():
     print "UNKNOWN - USAGE: uploaddata.py <datacenter-uuid> <url>"
 
-print len(argv)
+print len(sys.argv)
 if len(sys.argv) != 2:
     usage()
     exit(3)
