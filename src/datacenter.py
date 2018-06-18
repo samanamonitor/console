@@ -37,7 +37,7 @@ def application(environ, start_response):
             client = MongoClient()
             client.drop_database(datacenter_uuid)
             db = client[datacenter_uuid]
-            for collection in data:
+            for collection in dcdata:
                 db[collection].insert(dcdata[collection])
             output = json.dumps({ 'result': 'OK', 'data_size': environ['CONTENT_LENGTH']})
         except:
