@@ -138,7 +138,7 @@ elif object_type == 'host_config_all':
     exit(0)
 
 elif object_type == 'service_config_all':
-    print sd_get_service_config_all()
+    print sd.sd_get_service_config_all()
     exit(0)
 
 print "%s | %s" % (plugin_output, performance_data)
