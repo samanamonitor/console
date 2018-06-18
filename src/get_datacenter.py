@@ -55,6 +55,7 @@ class StatusData:
     def sd_get_service_config_all(self):
         config = ""
         for service in self.find('servicestatus'):
+            if service['host_name'] == 'localhost': continue
             config += """define service {
             use                    samana-service
             host_name              %s
