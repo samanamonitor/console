@@ -12,10 +12,7 @@ class StatusData:
         self.db = client[datacenter_uuid]
 
     def find(self, collection, f=None):
-        if f is None:
-            return self.db[collection].find()
-        else:
-            return self.db[collection].find(f)
+        return self.db[collection].find(f)
 
     def find_one(self, collection, f=None):
         result = self.find(collection, f)
