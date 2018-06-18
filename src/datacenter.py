@@ -2,11 +2,7 @@ import json
 import os.path
 import sys
 from time import time
-from ConfigParser import ConfigParser
-
-config = ConfigParser()
-config.read('/etc/samanamonitor/samanamonitor.conf')
-data_path = config.get('general', 'datacenter_path')
+from pymongo import MongoClient
 
 def res_forbidden(environ, message=None):
     if message is None:
@@ -26,22 +22,23 @@ def res_error(environ, message=None):
 
 def application(environ, start_response):
     content_type = 'text/x-json'
-    datacenter_file = data_path + environ['PATH_INFO']
+    datacenter_uuid = environ['PATH_INFO'].split('/')[1]
 
     if environ['REQUEST_METHOD'] != 'PUT':
         (status, output, content_type) = res_forbidden(environ)
-    elif not os.path.exists(datacenter_file):
-        dcuuid = environ['PATH_INFO'][1:]
+    elif datacenter_uuid == '':
         (status, output, content_type) = res_forbidden(environ, 
-            "Datacenter %s not defined" % dcuuid)
+            "Datacenter %s not defined" % datacenter_uuid)
     # TODO: elif not authenticated(dcuuid, envinron['HTTP_Authentication'])
     else:
         status = '200 OK'
         try:
             dcdata = json.load(environ['wsgi.input'])
-            fh = open(datacenter_file, "w")
-            json.dump(dcdata, fh)
-            fh.close()
+            client = MongoClient()
+            client.drop_database(datacenter_uuid)
+            db = client[datacenter_uuid]
+            for collection in data:
+                db[collection].insert(dcdata[collection])
             output = json.dumps({ 'result': 'OK', 'data_size': environ['CONTENT_LENGTH']})
         except:
             print >> environ['wsgi.errors'], sys.exc_info()[1]
