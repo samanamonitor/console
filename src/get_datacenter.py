@@ -11,10 +11,10 @@ class StatusData:
         client = MongoClient()
         self.db = client[datacenter_uuid]
 
-    def find(self, collection, f=None):
+    def find(self, collection, f={}):
         return self.db[collection].find(f)
 
-    def find_one(self, collection, f=None):
+    def find_one(self, collection, f={}):
         result = self.find(collection, f)
         if result.count() != 1:
             return None
