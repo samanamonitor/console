@@ -1,54 +1,55 @@
 #!/usr/bin/python
 
 import json
+from pymongo import MongoClient
 import sys
 
 # 'c04a22fe-dd01-4149-83c8-35cf7d3ec571'
 
 class StatusData:
     def __init__(self, datacenter_uuid):
-        try:
-            fh = open("/var/lib/samanamonitor/" + datacenter_uuid, 'r')
-            self.data = json.load(fh)
-            fh.close()
-        except:
-            print "Invalid Datacenter"
-            usage()
+        client = MongoClient()
+        self.db = client[datacenter_uuid]
+
+    def find(self, collection, f=None):
+        return self.db[collection].find(f)
+
+    def find_one(self, collection, f=None):
+        result = self.find(collection, f)
+        if result.count() != 1:
+            return None
+        else:
+            return result[0]
 
     def get_host(self, host_name):
-        for host in self.data['hoststatus']:
-            if host['host_name'] == host_name:
-                return host
-        return None
+        f = {"host_name": host_name}
+        return self.find_one('hoststatus', f)
 
     def get_service(self, service_description, host_name):
-        for service in self.data['servicestatus']:
-            if service['service_description'] == service_description \
-                    and service['host_name'] == host_name:
-                return service
-        return None
+        f = { "host_name": host_name, "service_description": service_description }
+        return self.find_one("servicestatus", f)
 
     def get_service_for_host(self, host_name):
-        sd = []
-        for service in self.data['servicestatus']:
-            if service['host_name'] == host_name:
-                sd += [ service['service_description'] ]
-        return sd
+        f = { "host_name", host_name }
+        services = []
+        for s in self.find("servicestatus", f):
+            services += [ s['service_description'] ]
+        return services
 
     def get_hosts(self):
         hs = []
-        for host in self.data['hoststatus']:
+        for host in self.find('hoststatus'):
             hs += [ host['host_name'] ]
         return hs
 
     def get_host_config_all(self):
         config = ""
-        for host in self.data['hoststatus']:
-            if host['host_name'] == 'localhost': continue
+        for host_name in self.get_hosts():
+            if host_name == 'localhost': continue
             config += """define host {
             use                    samana-host
             host_name              %s
-            }\n\n""" % host['host_name']
+            }\n\n""" % host_name
         return config
 
 def usage():
