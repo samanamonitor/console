@@ -52,6 +52,16 @@ class StatusData:
             }\n\n""" % host_name
         return config
 
+    def sd_get_service_config_all(self):
+        config = ""
+        for service in self.find('servicestatus'):
+            config += """define service {
+            use                    samana-service
+            host_name              %s
+            service_description    %s
+            }\n\n""" % (service['host_name'], service['service_description'])
+        return config
+
 def usage():
     print "UNKNOWN - USAGE: loadhost_datacenter <datacenter-uuid> <service|host|hostservices|hosts> <host_name?> <service_description?>"
     exit(3)    
@@ -82,6 +92,9 @@ elif object_type == 'hosts':
     pass
 
 elif object_type == 'host_config_all':
+    pass
+
+elif object_type == 'service_config_all':
     pass
 
 else:
@@ -122,6 +135,10 @@ elif object_type == 'hosts':
 
 elif object_type == 'host_config_all':
     print sd.get_host_config_all()
+    exit(0)
+
+elif object_type == 'service_config_all':
+    print sd_get_service_config_all()
     exit(0)
 
 print "%s | %s" % (plugin_output, performance_data)
