@@ -30,7 +30,7 @@ class StatusData:
         return self.find_one("servicestatus", f)
 
     def get_service_for_host(self, host_name):
-        f = { "host_name", host_name }
+        f = { "host_name": host_name }
         services = []
         for s in self.find("servicestatus", f):
             services += [ s['service_description'] ]
